@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Insider &amp; Congress Trade Monitor</title>
+<style>
+  :root{
+    --bg:#0e1116; --card:#161c25; --card2:#1c2430; --line:#28313f;
+    --txt:#e8edf4; --dim:#93a1b3; --faint:#5c6a7d;
+    --green:#34d399; --amber:#fbbf24; --red:#f87171; --blue:#60a5fa;
+    --dem:#3b82f6; --rep:#ef4444;
+  }
+  *{box-sizing:border-box; margin:0; padding:0}
+  body{background:var(--bg); color:var(--txt); font:15px/1.55 "Segoe UI",system-ui,sans-serif; padding-bottom:60px}
+  a{color:var(--blue); text-decoration:none}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 20px}
+  header{padding:26px 0 14px}
+  h1{font-size:24px; letter-spacing:.2px}
+  .sub{color:var(--dim); font-size:13px; margin-top:4px}
+  .badge{display:inline-block; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600; margin-left:8px; vertical-align:2px}
+  .badge.live{background:#0b3b2e; color:var(--green); border:1px solid #14624d}
+  .badge.sample{background:#3b2a0b; color:var(--amber); border:1px solid #6b4e13}
+  .disclaimer{background:#1a2230; border:1px solid var(--line); border-left:4px solid var(--amber); border-radius:8px; padding:10px 14px; font-size:13px; color:var(--dim); margin:14px 0}
+  .notice{background:#33270f; border:1px solid #6b4e13; color:#f5d488; border-radius:8px; padding:9px 14px; font-size:13px; margin:8px 0}
+  nav{position:sticky; top:0; z-index:9; background:rgba(14,17,22,.94); backdrop-filter:blur(4px); border-bottom:1px solid var(--line); margin-bottom:20px}
+  nav .wrap{display:flex; gap:4px; padding-top:8px}
+  nav button{background:none; border:none; color:var(--dim); font:600 14px "Segoe UI",sans-serif; padding:10px 16px; cursor:pointer; border-bottom:2px solid transparent}
+  nav button.on{color:var(--txt); border-bottom-color:var(--blue)}
+  section{display:none} section.on{display:block}
+  h2{font-size:17px; margin:18px 0 10px; color:#cfd9e6}
+  .empty{background:var(--card); border:1px dashed var(--line); border-radius:10px; padding:26px; text-align:center; color:var(--faint); font-size:14px}
+
+  /* signal cards */
+  .sig{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:14px}
+  .sig .top{display:flex; flex-wrap:wrap; gap:14px; align-items:center}
+  .tick{font-size:20px; font-weight:700}
+  .comp{color:var(--dim); font-size:14px}
+  .sect{color:var(--faint); font-size:12px; margin-top:2px}
+  .meterbox{margin-left:auto; min-width:260px; flex:0 0 300px}
+  .mlabel{display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin-bottom:4px}
+  .mlabel b{font-size:15px; color:var(--txt)}
+  .meter{height:12px; border-radius:8px; background:linear-gradient(90deg,#6b7280 0%,#f87171 25%,#fbbf24 55%,#34d399 80%); position:relative; opacity:.92}
+  .needle{position:absolute; top:-4px; width:4px; height:20px; background:#fff; border-radius:2px; box-shadow:0 0 6px rgba(0,0,0,.7)}
+  .bucket{font-size:12px; font-weight:700; padding:2px 9px; border-radius:12px}
+  .b-vs{background:#0b3b2e;color:var(--green)} .b-s{background:#123c22;color:#7ee2a8}
+  .b-n{background:#3b2a0b;color:var(--amber)} .b-w{background:#2a2f38;color:var(--dim)}
+  .rows{display:flex; gap:26px; flex-wrap:wrap; margin:12px 0 4px; font-size:13px; color:var(--dim)}
+  .rows b{color:var(--txt)}
+  .chips{margin-top:10px; display:flex; flex-wrap:wrap; gap:6px}
+  .chip{font-size:12px; padding:3px 9px; border-radius:14px; background:var(--card2); border:1px solid var(--line); color:var(--dim)}
+  .chip.plus{border-color:#1d5c47; color:#8fe6c3} .chip.minus{border-color:#6b2f2f; color:#f0a7a7}
+  .buyers{margin-top:10px; font-size:13px; color:var(--dim)}
+  .polhit{margin-top:8px; font-size:13px; color:#a9c4ea}
+
+  /* tables */
+  table{width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; font-size:14px}
+  th{background:var(--card2); text-align:left; font-size:12px; color:var(--dim); text-transform:uppercase; letter-spacing:.5px; padding:9px 12px}
+  td{padding:10px 12px; border-top:1px solid var(--line); vertical-align:middle}
+  .pos{color:var(--green); font-weight:600} .neg{color:var(--red); font-weight:600}
+  .avatar{width:34px; height:34px; border-radius:50%; object-fit:cover; vertical-align:middle; margin-right:9px; border:1px solid var(--line)}
+  .party-D{color:var(--dem); font-weight:700} .party-R{color:var(--rep); font-weight:700}
+  .small{font-size:12px; color:var(--faint)}
+
+  /* profiles */
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:14px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px}
+  .card .head{display:flex; gap:12px; align-items:center; margin-bottom:8px}
+  .card img.big{width:56px; height:56px; border-radius:10px; object-fit:cover; border:1px solid var(--line)}
+  .card h3{font-size:15px}
+  .tagline{font-size:12px; color:var(--faint)}
+  .bio{font-size:13px; color:var(--dim)}
+  .kv{margin-top:8px; font-size:12px; color:var(--faint)}
+  .kv b{color:var(--dim)}
+
+  ol.doc{margin:10px 0 0 20px; font-size:14px; color:var(--dim)}
+  ol.doc li{margin-bottom:8px}
+  footer{margin-top:34px; border-top:1px solid var(--line); padding-top:14px; font-size:12px; color:var(--faint)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Insider &amp; Congress Trade Monitor <span id="modeBadge"></span></h1>
+    <div class="sub" id="genline"></div>
+    <div class="disclaimer"><b>Informational only — not investment advice.</b> Everything here is compiled from mandatory public disclosures
+      (SEC EDGAR Form 4 &amp; 13F, congressional STOCK Act filings). Congressional amounts are reported in ranges, so dollar figures for
+      politicians are midpoint <i>estimates</i>. The score is heuristic signal strength based on published research — it is <b>not</b> a probability of profit.
+      Disclosures lag reality: insiders ~2 business days, Congress 30–45 days, funds up to 45 days after quarter-end.</div>
+    <div id="notices"></div>
+  </header>
+</div>
+
+<nav><div class="wrap">
+  <button class="on" data-t="signals">Signals</button>
+  <button data-t="boards">Leaderboards</button>
+  <button data-t="profiles">Profiles</button>
+  <button data-t="method">How scoring works</button>
+</div></nav>
+
+<div class="wrap">
+  <section id="signals" class="on"></section>
+  <section id="boards"></section>
+  <section id="profiles"></section>
+  <section id="method"></section>
+  <footer>
+    Sources: SEC EDGAR (sec.gov — Form 4 daily indexes, 13F info tables, company facts) · Senate/House Stock Watcher community mirrors of official
+    STOCK Act filings · unitedstates.io congressional photos (public domain). All sources are free and keyless. This tool runs entirely on your
+    computer; no accounts, no tracking. Verify anything before acting on it — filings occasionally contain errors and community mirrors can lag.
+  </footer>
+</div>
+
+<script src="data.js"></script>
+<script>
+const D = window.MONITOR_DATA || {};
+const e = s => String(s==null?"":s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fm = n => n==null ? "—" : "$" + Math.round(n).toLocaleString();
+const pct = n => n==null ? "—" : (n>0?"+":"") + n.toLocaleString() + "%";
+const cls = n => n==null ? "" : (n>=0 ? "pos" : "neg");
+
+function initialsURI(name, hueSeed){
+  const parts = String(name||"?").replace(/[^A-Za-z ]/g,"").trim().split(/\s+/);
+  const ini = ((parts[0]||"?")[0] + (parts.length>1 ? parts[parts.length-1][0] : "")).toUpperCase();
+  let h = 0; for (const ch of String(hueSeed||name)) h = (h*31 + ch.charCodeAt(0)) % 360;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" rx="14" fill="hsl(${h},38%,32%)"/><text x="40" y="52" font-family="Segoe UI,sans-serif" font-size="32" fill="#e8edf4" text-anchor="middle" font-weight="600">${ini}</text></svg>`;
+  return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+}
+function img(src, name, klass){
+  const fb = initialsURI(name);
+  return `<img class="${klass}" src="${src||fb}" onerror="this.onerror=null;this.src='${fb}'" alt="">`;
+}
+const polPhoto = b => b ? `https://unitedstates.github.io/images/congress/225x275/${b}.jpg` : "";
+const favicon = d => d ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=128` : "";
+
+/* header */
+document.getElementById("modeBadge").innerHTML =
+  D.mode === "LIVE" ? '<span class="badge live">LIVE DATA</span>'
+                    : '<span class="badge sample">SAMPLE DATA — run refresh.bat for live data</span>';
+document.getElementById("genline").textContent =
+  "Generated " + (D.generatedAt||"—") + " · insider cluster window " + (D.params?.clusterWindowDays??21) +
+  " days · congress window " + (D.params?.congressWindowDays??90) + " days";
+document.getElementById("notices").innerHTML = (D.notices||[]).map(n=>`<div class="notice">⚠ ${e(n)}</div>`).join("");
+
+/* signals */
+(function(){
+  const el = document.getElementById("signals");
+  const sigs = D.signals||[];
+  if (!sigs.length){ el.innerHTML = `<div class="empty">No qualifying open-market insider purchases in the current window.<br>Run refresh.bat to pull the latest filings.</div>`; return; }
+  el.innerHTML = "<h2>Buy signals, strongest first</h2>" + sigs.map(s=>{
+    const bcls = s.score>=75?"b-vs":s.score>=55?"b-s":s.score>=35?"b-n":"b-w";
+    return `<div class="sig">
+      <div class="top">
+        <div>
+          <span class="tick">${e(s.ticker)}</span> <span class="bucket ${bcls}">${e(s.bucket)}</span>
+          <div class="comp">${e(s.company)}</div>
+          <div class="sect">${e(s.sector||"")}</div>
+        </div>
+        <div class="meterbox">
+          <div class="mlabel"><span>Conviction score</span><b>${s.score} / 100</b></div>
+          <div class="meter"><div class="needle" style="left:calc(${s.score}% - 2px)"></div></div>
+          <div class="small" style="margin-top:4px">signal strength, not a profit probability</div>
+        </div>
+      </div>
+      <div class="rows">
+        <span>Bought: <b>${fm(s.totalBuy)}</b></span>
+        <span>Sold (same window): <b>${fm(s.totalSell)}</b></span>
+        <span>Latest buy: <b>${e(s.latestBuy||"—")}</b></span>
+      </div>
+      <div class="buyers"><b>Buyers:</b> ${(s.buyers||[]).map(b=>`${e(b.name)} <span class="small">(${e(b.title)}, ${fm(b.dollars)})</span>`).join(" · ")}</div>
+      ${(s.polHits&&s.polHits.length)?`<div class="polhit">🏛 Congress: ${s.polHits.map(p=>`${e(p.who)} ${e(p.amount)} on ${e(p.date)}`).join(" · ")}</div>`:""}
+      <div class="chips">${(s.factors||[]).map(f=>`<span class="chip ${f.pts>0?"plus":f.pts<0?"minus":""}">${f.pts>0?"+":""}${f.pts} ${e(f.label)}</span>`).join("")}</div>
+    </div>`;
+  }).join("");
+})();
+
+/* leaderboards */
+(function(){
+  const el = document.getElementById("boards");
+  let h = "<h2>Corporate insiders — biggest open-market buyers (current window)</h2>";
+  const ins = D.insiderBoard||[];
+  h += !ins.length ? `<div class="empty">Populates after the first live run.</div>` :
+  `<table><tr><th>Insider</th><th>Company</th><th>Bought</th><th>Est. holdings value</th><th>Stake increase</th></tr>` +
+  ins.map(r=>`<tr>
+    <td>${img("", r.name, "avatar")}${e(r.name)}<div class="small">${e(r.title)}</div></td>
+    <td>${e(r.company)} <span class="small">${e(r.ticker)}</span></td>
+    <td class="pos">${fm(r.buyDollars)}</td>
+    <td>${fm(r.holdingsValue)}</td>
+    <td class="${cls(r.deltaPct)}">${pct(r.deltaPct)}</td></tr>`).join("") + "</table>";
+
+  h += `<h2 style="margin-top:26px">Members of Congress — disclosed buying (last ${D.params?.congressWindowDays??90} days)</h2>
+        <div class="small" style="margin-bottom:8px">Dollar values are midpoints of disclosed ranges — estimates by necessity. Δ compares to the prior ${D.params?.congressWindowDays??90}-day period.</div>`;
+  const pol = D.politicianBoard||[];
+  h += !pol.length ? `<div class="empty">Populates after the first live run (or the community congress mirror is unavailable — see notices).</div>` :
+  `<table><tr><th>Member</th><th>Buys (est.)</th><th>Sells (est.)</th><th>Δ buys vs prior period</th><th>Top tickers</th><th>Filings</th></tr>` +
+  pol.map(r=>`<tr>
+    <td>${img(polPhoto(r.bioguide), r.name, "avatar")}${e(r.name)}
+        <div class="small"><span class="party-${e(r.party)}">${e(r.party)}</span>-${e(r.state)} · ${e(r.chamber)}${r.committees&&r.committees.length?" · "+e(r.committees.join(", ")):""}</div></td>
+    <td class="pos">${fm(r.buyDollars)}</td>
+    <td>${fm(r.sellDollars)}</td>
+    <td class="${cls(r.deltaPct)}">${pct(r.deltaPct)}</td>
+    <td class="small">${(r.topTickers||[]).map(t=>`${e(t[0])} ${fm(t[1])}`).join("<br>")}</td>
+    <td>${r.trades}</td></tr>`).join("") + "</table>";
+
+  h += `<h2 style="margin-top:26px">Watchlist funds — portfolio value (latest two 13F filings)</h2>`;
+  const fb = D.fundBoard||[];
+  h += !fb.length ? `<div class="empty">Populates after the first live run.</div>` :
+  `<table><tr><th>Fund</th><th>Portfolio value</th><th>Δ $</th><th>Δ %</th><th>Top holdings</th><th>Biggest adds</th></tr>` +
+  fb.map(r=>`<tr>
+    <td>${img(favicon(r.domain), r.name, "avatar")}${e(r.name)}<div class="small">13F as of ${e(r.asOf)} (filed ${e(r.filed)})</div></td>
+    <td><b>${fm(r.totalValue)}</b></td>
+    <td class="${cls(r.deltaValue)}">${fm(r.deltaValue)}</td>
+    <td class="${cls(r.deltaPct)}">${pct(r.deltaPct)}</td>
+    <td class="small">${(r.topHoldings||[]).map(t=>`${e(t.name)} ${fm(t.value)}`).join("<br>")}</td>
+    <td class="small">${(r.topIncreases||[]).map(t=>`${e(t.name)} +${fm(t.delta)}`).join("<br>")}</td></tr>`).join("") + "</table>";
+  el.innerHTML = h;
+})();
+
+/* profiles */
+(function(){
+  const el = document.getElementById("profiles");
+  let h = "<h2>Politicians on the watchlist</h2><div class='grid'>";
+  h += (D.politicianBoard||[]).filter(p=>p.bio).map(p=>`
+    <div class="card"><div class="head">${img(polPhoto(p.bioguide), p.name, "big")}
+      <div><h3>${e(p.name)}</h3><div class="tagline"><span class="party-${e(p.party)}">${e(p.party)}</span>-${e(p.state)} · ${e(p.chamber)}</div></div></div>
+      <div class="bio">${e(p.bio)}</div>
+      <div class="kv"><b>Sector focus:</b> ${e(p.sector||"—")}${p.committees&&p.committees.length?`<br><b>Committees:</b> ${e(p.committees.join(", "))}`:""}</div>
+    </div>`).join("");
+  // curated profiles even with no activity yet
+  h += (D.profileFallback?.politicians||[]).map(p=>`
+    <div class="card"><div class="head">${img(polPhoto(p.bioguide), p.name, "big")}
+      <div><h3>${e(p.name)}</h3><div class="tagline"><span class="party-${e(p.party)}">${e(p.party)}</span>-${e(p.state)} · ${e(p.chamber)}</div></div></div>
+      <div class="bio">${e(p.bio)}</div>
+      <div class="kv"><b>Sector focus:</b> ${e(p.sector||"—")}${p.committees&&p.committees.length?`<br><b>Committees:</b> ${e(p.committees.join(", "))}`:""}</div>
+    </div>`).join("");
+  h += "</div><h2 style='margin-top:26px'>Funds &amp; investors on the watchlist</h2><div class='grid'>";
+  const funds = (D.fundBoard&&D.fundBoard.length ? D.fundBoard : (D.profileFallback?.funds||[]));
+  h += funds.map(f=>`
+    <div class="card"><div class="head">${img(favicon(f.domain), f.name, "big")}
+      <div><h3>${e(f.name)}</h3><div class="tagline">${e(f.sector||"")}</div></div></div>
+      <div class="bio">${e(f.bio||"")}</div>
+      ${f.totalValue?`<div class="kv"><b>Portfolio:</b> ${fm(f.totalValue)} as of ${e(f.asOf)} ${f.deltaPct!=null?`(<span class="${cls(f.deltaPct)}">${pct(f.deltaPct)}</span> vs prior quarter)`:""}</div>`:""}
+    </div>`).join("");
+  h += "</div><h2 style='margin-top:26px'>Insiders surfacing in current signals</h2><div class='grid'>";
+  const seen = new Set();
+  (D.signals||[]).slice(0,12).forEach(s=>(s.buyers||[]).forEach(b=>{
+    if (seen.has(b.name)) return; seen.add(b.name);
+    h += `<div class="card"><div class="head">${img("", b.name, "big")}
+      <div><h3>${e(b.name)}</h3><div class="tagline">${e(b.title)} · ${e(s.company)} (${e(s.ticker)})</div></div></div>
+      <div class="bio">Corporate insider at ${e(s.company)}${s.sector?` — sector: ${e(s.sector)}`:""}. Bought ${fm(b.dollars)} in the current window (open-market Form 4 purchase). Profile auto-generated from SEC filings.</div>
+    </div>`;
+  }));
+  if (!seen.size) h += `<div class="empty">Insider profiles are generated automatically from live signals.</div>`;
+  h += "</div>";
+  el.innerHTML = h;
+})();
+
+/* method */
+document.getElementById("method").innerHTML =
+  "<h2>How the conviction score works</h2><ol class='doc'>" +
+  (D.scoreDoc||[]).map(x=>`<li>${e(x)}</li>`).join("") +
+  `</ol>
+   <h2 style="margin-top:22px">Honest limitations</h2>
+   <ol class="doc">
+     <li>Congressional trades are disclosed 30–45 days late and in dollar RANGES — by the time you see them, the market usually has too.</li>
+     <li>Academic evidence: post-2012 studies find members of Congress in aggregate do NOT beat the market; insider cluster-buying is the better-documented signal (roughly 2x the abnormal returns of solo buys, with the strongest results in smaller companies).</li>
+     <li>Disclosure-following strategies partly move prices themselves (the "announcement effect").</li>
+     <li>Nothing here knows about your finances, taxes, or risk tolerance. Treat this as a research lead generator, not a trade trigger.</li>
+   </ol>`;
+
+/* tabs */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===b.dataset.t));
+});
+</script>
+</body>
+</html>

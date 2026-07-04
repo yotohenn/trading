@@ -1,0 +1,135 @@
+{
+  "contact_email": "yotohenn@users.noreply.github.com",
+  "lookback_business_days": 7,
+  "cluster_window_days": 21,
+  "congress_corroboration_days": 45,
+  "congress_leaderboard_days": 90,
+  "min_purchase_dollars": 2000,
+  "max_filings_per_run": 6000,
+  "request_spacing_seconds": 0.13,
+
+  "watchlist_funds": [
+    {
+      "cik": "0001067983",
+      "expect_name": "BERKSHIRE",
+      "display": "Berkshire Hathaway (Warren Buffett)",
+      "domain": "berkshirehathaway.com",
+      "bio": "Warren Buffett's holding company and the most-watched institutional portfolio in the world. Long-horizon value investing; very large, concentrated positions held for years.",
+      "sector": "Diversified / value (insurance, energy, consumer, financials)"
+    },
+    {
+      "cik": "0001336528",
+      "expect_name": "PERSHING SQUARE",
+      "display": "Pershing Square (Bill Ackman)",
+      "domain": "pershingsquareholdings.com",
+      "bio": "Bill Ackman's activist fund. Runs a very concentrated book (usually 8-12 large positions) and often takes public activist stances on its holdings.",
+      "sector": "Activist / concentrated large-cap (consumer, financials, real estate)"
+    },
+    {
+      "cik": "0001350694",
+      "expect_name": "BRIDGEWATER",
+      "display": "Bridgewater Associates",
+      "domain": "bridgewater.com",
+      "bio": "The world's largest macro hedge fund, founded by Ray Dalio. 13F shows its US equity sleeve - broad, systematically managed positions.",
+      "sector": "Global macro / systematic (broad equity exposure)"
+    },
+    {
+      "cik": "0001536411",
+      "expect_name": "DUQUESNE",
+      "display": "Duquesne Family Office (Stanley Druckenmiller)",
+      "domain": "",
+      "bio": "Stanley Druckenmiller's family office. Famous for aggressive, high-conviction macro and growth bets and for moving early on big themes (AI, GLP-1s).",
+      "sector": "Macro / growth (tech, healthcare, cyclicals)"
+    },
+    {
+      "cik": "0001656456",
+      "expect_name": "APPALOOSA",
+      "display": "Appaloosa (David Tepper)",
+      "domain": "",
+      "bio": "David Tepper's fund, known for bold contrarian and distressed bets and heavy tech/China exposure in recent years.",
+      "sector": "Opportunistic / distressed, large-cap tech"
+    },
+    {
+      "cik": "0001037389",
+      "expect_name": "RENAISSANCE",
+      "display": "Renaissance Technologies",
+      "domain": "",
+      "bio": "The quantitative fund founded by Jim Simons. Thousands of algorithmically chosen positions - watch aggregate value trend rather than single names.",
+      "sector": "Quantitative / systematic (very broad)"
+    }
+  ],
+
+  "watchlist_politicians": [
+    {
+      "name": "Nancy Pelosi",
+      "match_names": ["pelosi"],
+      "bioguide": "P000197",
+      "party": "D", "state": "CA", "chamber": "House",
+      "committees": [],
+      "committee_sectors": [],
+      "bio": "Former Speaker of the House. Disclosed trades are made largely by spouse Paul Pelosi, a venture capitalist; historically concentrated in large-cap tech, often via call options (the famous 'Pelosi LEAPS').",
+      "sector": "Tech-heavy (NVDA, AAPL, MSFT, GOOGL historically)"
+    },
+    {
+      "name": "Ro Khanna",
+      "match_names": ["khanna"],
+      "bioguide": "K000389",
+      "party": "D", "state": "CA", "chamber": "House",
+      "committees": ["Armed Services"],
+      "committee_sectors": ["defense", "aerospace", "ordnance"],
+      "bio": "Represents Silicon Valley. One of the highest filing volumes in Congress - trades are mostly spouse and dependent family trusts, broadly diversified.",
+      "sector": "Diversified family trusts; sits on Armed Services"
+    },
+    {
+      "name": "Marjorie Taylor Greene",
+      "match_names": ["greene, marjorie", "marjorie taylor greene"],
+      "bioguide": "G000596",
+      "party": "R", "state": "GA", "chamber": "House",
+      "committees": ["Oversight"],
+      "committee_sectors": [],
+      "bio": "Frequent filer with broad single-stock purchases across sectors; buys have drawn attention for timing around policy events.",
+      "sector": "Broad US equities"
+    },
+    {
+      "name": "Michael McCaul",
+      "match_names": ["mccaul"],
+      "bioguide": "M001157",
+      "party": "R", "state": "TX", "chamber": "House",
+      "committees": ["Foreign Affairs", "Homeland Security"],
+      "committee_sectors": ["defense", "aerospace", "software", "communication"],
+      "bio": "Senior member on Foreign Affairs. One of the wealthiest members of Congress; very high disclosed trade volume, largely family accounts.",
+      "sector": "Diversified; defense/tech relevant to committee work"
+    },
+    {
+      "name": "Josh Gottheimer",
+      "match_names": ["gottheimer"],
+      "bioguide": "G000583",
+      "party": "D", "state": "NJ", "chamber": "House",
+      "committees": ["Financial Services", "Intelligence"],
+      "committee_sectors": ["bank", "financial", "insurance", "software", "semiconductor"],
+      "bio": "Sits on Financial Services and Intelligence. Among the most active traders in the House, frequently in tech and financials.",
+      "sector": "Tech and financials"
+    },
+    {
+      "name": "Tommy Tuberville",
+      "match_names": ["tuberville"],
+      "bioguide": "T000278",
+      "party": "R", "state": "AL", "chamber": "Senate",
+      "committees": ["Armed Services", "Agriculture"],
+      "committee_sectors": ["defense", "aerospace", "agricultural", "food", "grain"],
+      "bio": "Senator and former college football coach; announced a 2026 run for Alabama governor. An active trader whose agriculture and defense-adjacent trades have drawn scrutiny given committee seats.",
+      "sector": "Broad, incl. agriculture and defense-adjacent names"
+    }
+  ],
+
+  "committee_sector_map": {
+    "Armed Services": ["defense", "aerospace", "ordnance", "guided missiles"],
+    "Foreign Affairs": ["defense", "aerospace"],
+    "Financial Services": ["bank", "financial", "insurance", "savings"],
+    "Energy & Commerce": ["energy", "oil", "gas", "electric", "pharmaceutical", "biological", "health"],
+    "Agriculture": ["agricultural", "food", "grain", "meat"],
+    "Intelligence": ["defense", "software", "communication"],
+    "Transportation": ["airline", "railroad", "transportation", "trucking"],
+    "Homeland Security": ["defense", "software", "communication"]
+  }
+}
